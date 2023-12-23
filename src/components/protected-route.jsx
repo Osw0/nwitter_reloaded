@@ -6,7 +6,7 @@ function ProtectedRoute(props) {
   const user = auth.currentUser;
 
   if (user === null) {
-    return Navigate({ to: "/login" });
+    Navigate("/login");
   }
 
   return children;

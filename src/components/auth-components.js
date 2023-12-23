@@ -49,5 +49,3 @@ export const Switcher = styled.span`
     color: #1d9bf0;
   }
 `;
-
-//buttton

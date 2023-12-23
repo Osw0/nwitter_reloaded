@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
 import { auth } from "../firebase";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,6 +16,7 @@ import GithubButton from "../components/github-btn";
 export default function CreateAccount() {
   const navigate = useNavigate();
   const [isLoading, setLoading] = useState(false);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,16 +24,18 @@ export default function CreateAccount() {
     const {
       target: { name, value },
     } = e;
-    if (name === "email") {
+    if (name === "name") {
+      setName(value);
+    } else if (name === "email") {
       setEmail(value);
     } else if (name === "password") {
       setPassword(value);
     }
   };
-
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (isLoading || email === "" || password === "") return;
+    setError("");
+    if (isLoading || name === "" || email === "" || password === "") return;
     try {
       setLoading(true);
       const credentials = await createUserWithEmailAndPassword(
@@ -40,17 +43,30 @@ export default function CreateAccount() {
         email,
         password
       );
+      await updateProfile(credentials.user, {
+        displayName: name,
+      });
       navigate("/");
     } catch (e) {
-      // setError
+      if (e instanceof FirebaseError) {
+        setError(e.message);
+      }
     } finally {
       setLoading(false);
     }
   };
   return (
     <Wrapper>
-      <Title>Log into 𝕏</Title>
+      <Title>Join 𝕏</Title>
       <Form onSubmit={onSubmit}>
+        <Input
+          onChange={onChange}
+          name="name"
+          value={name}
+          placeholder="Name"
+          type="text"
+          required
+        />
         <Input
           onChange={onChange}
           name="email"

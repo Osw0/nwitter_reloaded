@@ -25,7 +25,7 @@ export default function CreateAccount() {
     } = e;
     if (name === "email") {
       setEmail(value);
-    } else if (name === "password") {   //if문
+    } else if (name === "password") {  
       setPassword(value);
     }
   };
